@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOVINISM</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading overlay shown while app initializes -->
+    <div id="loadingOverlay" aria-hidden="false">
+        <div class="loader-wrap">
+            <div class="spinner" role="status" aria-label="Loading"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
+    <h1 class="app-heading" id="appHeading">JOVINISM</h1>
+    <p class="sub-heading">Press the time button below to Switch between AM and PM</p>
+    
+    <div class="container">
+        <button id="toggleBtn" class="toggle-btn">11:00 AM</button>
+        <div class="photos-container">
+            <div class="photo-section" id="amPhoto">
+                <img id="amImage" src="jovin" alt="AM Photo" class="display-photo">
+            </div>
+            <div class="photo-section" id="pmPhoto" style="display:none">
+                <p class="pm-note">Scroll down for booking</p>
+                <img id="pmImage" src="jovin_saree.jpg" alt="PM Photo" class="display-photo">
+                <button id="bookBtn" class="booking-btn" type="button" onclick="location.href='booking.html'">Press to book now!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('toggleBtn');
+        const heading = document.getElementById('appHeading');
+        const amPhoto = document.getElementById('amPhoto');
+        const pmPhoto = document.getElementById('pmPhoto');
+        let isOn = true; // true means AM
+
+        btn.addEventListener('click', function() {
+            isOn = !isOn;
+            btn.textContent = isOn ? '11:00 AM' : '11:00 PM';
+            heading.textContent = isOn ? 'Jovin' : 'JOvins booking service';
+            btn.classList.toggle('off');
+
+            // show only the appropriate photo area
+            if (isOn) {
+                amPhoto.style.display = 'flex';
+                pmPhoto.style.display = 'none';
+            } else {
+                amPhoto.style.display = 'none';
+                pmPhoto.style.display = 'flex';
+            }
+
+            // toggle night mode for PM
+            if (!isOn) {
+                document.body.classList.add('night-mode');
+            } else {
+                document.body.classList.remove('night-mode');
+            }
+        });
+
+            // Photo uploads removed — using fixed images for display
+
+            // Scroll down to booking area (currently scrolls to bottom)
+            function scrollToBooking() {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+    </script>
+
+    <script>
+        // Hide loading overlay after window load (keeps overlay until app resources ready)
+        (function(){
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) return;
+
+            window.addEventListener('load', function() {
+                // keep overlay a short moment for UX smoothness
+                const delay = 600; // ms
+                setTimeout(() => {
+                    overlay.classList.add('loading-hide');
+                    overlay.setAttribute('aria-hidden', 'true');
+                    // remove from flow after transition
+                    overlay.addEventListener('transitionend', () => {
+                        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                    }, { once: true });
+                }, delay);
+            });
+        })();
+    </script>
+
+    <style>
+        /* Loading overlay styles */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
+            color: #fff;
+            z-index: 9999;
+            transition: opacity 320ms ease, visibility 320ms ease;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #loadingOverlay.loading-hide { opacity: 0; visibility: hidden; }
+
+        .loader-wrap { display:flex; flex-direction:column; gap:12px; align-items:center; }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 6px solid rgba(255,255,255,0.15);
+            border-top-color: #e9c007;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+        }
+
+        .loading-text { font-weight: 600; letter-spacing: 0.3px; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .app-heading {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            padding: 30px 20px 20px 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .sub-heading {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            padding: 0 20px 20px 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        body {
+            display: block;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: background 0.5s ease;
+            padding: 20px;
+        }
+
+        body.night-mode { background: linear-gradient(135deg,#1a1a2e 0%, #0f0f1e 100%); }
+
+        .container {
+            position: relative;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .photos-container { width: 100%; margin-top: 10px; }
+
+        .photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .display-photo {
+            width: 100%;
+            max-width: 260px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain; /* show whole image without cropping */
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(233,192,7,0.35);
+        }
+
+        .select-btn {
+            padding: 10px 18px;
+            background-color: rgba(233,192,7,0.6);
+            border: 2px solid rgba(233,192,7,0.9);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .select-btn:hover { transform: scale(1.03); }
+
+        .toggle-btn {
+            padding: 12px 28px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 4px solid #e9c007;
+            border-radius: 8px;
+            background-color: #e0e9e1;
+            color: #040404;
+            transition: all 0.3s ease;
+        }
+            .booking-btn {
+                margin-top: 8px;
+                padding: 10px 18px;
+                background: #e9c007;
+                color: #070707;
+                border: none;
+                border-radius: 8px;
+                font-weight: 800;
+                cursor: pointer;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+                transition: transform 160ms ease, box-shadow 160ms ease;
+            }
+        
+            .booking-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(0,0,0,0.22); }
+        .toggle-btn.off { background-color: #323232; color: #fff; border-color: #555; }
+
+        .pm-note { 
+            color: #ffffff; 
+            font-weight: 600; 
+            text-align: center; 
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
+</body>
